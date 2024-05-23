@@ -11,6 +11,7 @@ $apiKey = "";
 $entity = "Desk"; // Desk | Employee | Booking | Asset
 /**
  * "" - skip value
+ * if "id" exists update entity otherwise create
  */
 $fieldnames = [];
 

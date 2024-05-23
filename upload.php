@@ -69,14 +69,14 @@ function array_to_url($arr) {
     return $res;
 }
 
-function update_entity_in_staffmap($entity, $data) {
+function save_staffmap_entity($entity, $data) {
     $id = $data["id"] ?? "";
     unset($data["id"]);
     $url_params = array_to_url($data);
-    $response = send_request($entity, $id, 'PUT', $url_params);
+    $method = $id ? "PUT" : "POST";
+    $response = send_request($entity, $id, $method, $url_params);
     if (!isset($response[0])) throw new Exception("Empty response");
     if (isset($response[0]["error"])) throw new Exception($response[0]["error"]);
-    return $id;
 }
 
 function remove_bad_sings($value) {
@@ -101,10 +101,10 @@ foreach ($data as $i => $row) {
         $row = array_map("remove_bad_sings", $row);
         $data = array_combine($fieldnames, $row);
         $data = array_filter($data, "is_not_empty", ARRAY_FILTER_USE_KEY);
-        $result = update_entity_in_staffmap($entity, $data);
-        echo PHP_EOL . "Updated " . ($i + 1) . " of " . $len . " id: " . $result;
+        save_staffmap_entity($entity, $data);
+        echo PHP_EOL . "Saved " . ($i + 1) . " of " . $len;
     } catch (\Throwable $e) {
-        echo PHP_EOL . "Failed to update " . ($i + 1) . " of " . $len;
+        echo PHP_EOL . "Failed to save " . ($i + 1) . " of " . $len;
         echo PHP_EOL . $e->getMessage() . PHP_EOL;
     }
 }
