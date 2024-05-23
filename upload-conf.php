@@ -9,6 +9,9 @@ $project_url = "";
 $apiKey = "";
 
 $entity = "Desk"; // Desk | Employee | Booking | Asset
-$fieldname = "bookable";
+/**
+ * "" - skip value
+ */
+$fieldnames = [];
 
 $filename = "result.json";

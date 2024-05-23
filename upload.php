@@ -62,19 +62,17 @@ function array_to_url($arr) {
     $res = '';
     $i = 0;
     foreach ($arr as $key => $value) {
-        if ($value) {
-            if ($i > 0) $res .= '&';
-            $i += 1;
-            $res .= $key . '=' . $value;
-        }
+        if ($i > 0) $res .= '&';
+        $i += 1;
+        $res .= $key . '=' . $value;
     }
     return $res;
 }
 
 function update_entity_in_staffmap($entity, $data) {
-    $url_params = array_to_url($data);
     $id = $data["id"] ?? "";
     unset($data["id"]);
+    $url_params = array_to_url($data);
     $response = send_request($entity, $id, 'PUT', $url_params);
     if (!isset($response[0])) throw new Exception("Empty response");
     if (isset($response[0]["error"])) throw new Exception($response[0]["error"]);
@@ -89,18 +87,24 @@ function remove_bad_sings($value) {
     return $value;
 }
 
+function is_not_empty($value): bool {
+    return !empty($value);
+}
 
 $json = file_get_contents($filename);
 $data = json_decode($json, true);
 
 $len = count($data);
 foreach ($data as $i => $row) {
-    $value = remove_bad_sings($row[1]);
     try {
-        $result = update_entity_in_staffmap($entity, ["id" => $row[0], $fieldname => $value]);
-        echo PHP_EOL . "Updated " . $i . " of " . $len . " id: " . $result;
+        $row = array_slice($row, 0, count($fieldnames));
+        $row = array_map("remove_bad_sings", $row);
+        $data = array_combine($fieldnames, $row);
+        $data = array_filter($data, "is_not_empty", ARRAY_FILTER_USE_KEY);
+        $result = update_entity_in_staffmap($entity, $data);
+        echo PHP_EOL . "Updated " . ($i + 1) . " of " . $len . " id: " . $result;
     } catch (\Throwable $e) {
-        echo PHP_EOL . "Failed to update " . $i . " of " . $len;
+        echo PHP_EOL . "Failed to update " . ($i + 1) . " of " . $len;
         echo PHP_EOL . $e->getMessage() . PHP_EOL;
     }
 }
