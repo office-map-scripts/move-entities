@@ -1,5 +1,5 @@
-# reload-entity-field
+# move-entities
 
-Скрипт save.php выгружает поле записей StaffMap-сущности в json
+Скрипт save.php выгружает поля записи StaffMap-сущности в json
 
-Скрипт upload.php обновляет поле записей StaffMap-сущности в соответствие с json из первого скрипта
+Скрипт upload.php обновляет поля или создает записи StaffMap-сущности в соответствие с json из первого скрипта
