@@ -187,13 +187,13 @@ $len = count($data);
 foreach ($data as $i => $row) {
     try {
         $row = array_slice($row, 0, count($fieldnames));
-        $row = array_map("remove_bad_sings", $row);
         $data = array_combine($fieldnames, $row);
         $data = array_filter($data, "is_not_empty", ARRAY_FILTER_USE_KEY);
 
         if ($desk_id_by) $data["desk_id"] = get_id($desk_id_by, $desks, $data);
-        if ($employee_id) $data["employee_id"] = get_id($employee_id_by, $employees, $data);
+        if ($employee_id_by) $data["employee_id"] = get_id($employee_id_by, $employees, $data);
 
+        $data = array_map("remove_bad_sings", $data);
         save_staffmap_entity($entity, $data);
         echo PHP_EOL . "Saved " . ($i + 1) . " of " . $len;
     } catch (\Throwable $e) {
